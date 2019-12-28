@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # xianyun2
 
 > My geometric Nuxt.js project
@@ -20,3 +21,7 @@ $ npm run generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+=======
+# Tourism-Projects
+旅游项目
+>>>>>>> ef6ee79f05d08d5e9071960cb680876eef99e636
