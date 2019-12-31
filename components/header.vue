@@ -13,17 +13,21 @@
         <nuxt-link to="/">首页</nuxt-link>
         <nuxt-link to="/post">旅游攻略</nuxt-link>
         <nuxt-link to="/hotel">酒店</nuxt-link>
-        <nuxt-link to="/air">国内机票</nuxt-link>
+
+        <nuxt-link to="/air">
+          国内机票
+          <!-- {{ $store.state.user.name}} -->
+        </nuxt-link>
       </el-row>
 
       <!-- 登录/用户信息 -->
       <el-row type="flex" align="middle">
         <!-- 如果用户存在则展示用户信息，用户数据来自store -->
-        <el-dropdown v-if="false">
+        <el-dropdown v-if="$store.state.user.userinfo.token">
           <el-row type="flex" align="middle" class="el-dropdown-link">
             <nuxt-link to="#">
-              <img src="http://157.122.54.189:9093/images/pic_sea.jpeg" />
-              用户名
+              <img :src="$axios.defaults.baseURL+$store.state.user.userinfo.user.defaultAvatar" />
+              {{$store.state.user.userinfo.user.nickname}}
             </nuxt-link>
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </el-row>
@@ -31,8 +35,9 @@
             <el-dropdown-item>
               <nuxt-link to="#">个人中心</nuxt-link>
             </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="handleLogout">退出</div>
+            <!-- native相当于给组件添加了一个click发射事件 -->
+            <el-dropdown-item @click.native="tuichu">
+              <div>退出</div>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -47,8 +52,12 @@
 export default {
     methods: {
         // 用户退出
-        handleLogout(){},
-    }
+      
+       tuichu(){
+         this.$store.commit('user/setinfo',{})
+       }
+    },
+   
 }
 </script>
 <style scoped lang="less">
