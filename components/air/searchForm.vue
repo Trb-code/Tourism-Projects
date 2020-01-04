@@ -98,14 +98,14 @@ export default {
         // 默认帮客户选中第一个出发的城市
         handdepar(){
           if(this.destdata.length>0){
-            this.form.destCity=this.destdata[0].value
+            this.form.destCity=this.destdata[0].value.replace('市','')
             this.form.destCode=this.destdata[0].sort
           }
         },
            // 默认帮客户选中第一个达到的城市
         handdest(){
             if(this.godata.length>0){
-            this.form.departCity=this.godata[0].value
+            this.form.departCity=this.godata[0].value.replace('市','')
             this.form.departCode=this.godata[0].sort
           }
         },
@@ -163,13 +163,13 @@ export default {
         // 出发城市下拉选择时触发
         handleDepartSelect(item) {
           // console.log(item);      
-            this.form.departCity=item.name
+            this.form.departCity=item.name.replace('市','')
           this.form.departCode=item.sort       
         },
 
         // 目标城市下拉选择时触发
         handleDestSelect(item) {
-            this.form.destCity=item.name
+            this.form.destCity=item.name.replace('市','')
           this.form.destCode=item.sort
             
         },
@@ -197,7 +197,11 @@ export default {
             params:this.form
           }).then(res=>{
             console.log(res);
-            
+            this.$router.push({path:'air/flights',
+            query: this.form
+            })
+            this.$store.commit('air/historydata',this.form)
+                     
           })
            
         },

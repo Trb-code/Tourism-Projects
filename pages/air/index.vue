@@ -40,16 +40,50 @@
     </h2>
 
     <!-- 特价机票 -->
-    <div class="air-sale"></div>
+    <div class="air-sale">
+      <div class="air-sale">
+        <el-row type="flex" class="air-sale-pic" justify="space-between">
+          <el-col :span="6" v-for="(item, index) in sales" :key="index">
+            <nuxt-link
+              :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"
+            >
+              <img :src="item.cover" />
+              <el-row class="layer-bar" type="flex" justify="space-between">
+                <span>{{item.departCity}}-{{item.destCity}}</span>
+                <span>{{item.price.toFixed(2)}}</span>
+              </el-row>
+            </nuxt-link>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
 import SearchForm from "@/components/air/searchForm";
 export default {
+   data(){
+        return {
+            sales: []
+        }
+    },
     components:{
         SearchForm
-    }
+    },
+    mounted(){
+      this.$axios({
+        url:'/airs/sale'
+      }).then(res=>{
+        console.log(res);
+        this.sales=res.data.data       
+      })
+    },
+//     filters:{
+//       tofixed(value){
+// return Number(value).toFixed(2)
+//       }           
+//     }
 
 }
 </script>
