@@ -18,7 +18,8 @@ export default {
     data () {
         return {
             infodata:{
-                seat_infos: {}
+                seat_infos: {},
+              
             }
         }
     },

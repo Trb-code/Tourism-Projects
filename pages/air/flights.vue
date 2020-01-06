@@ -58,11 +58,14 @@ flightsAside
             // 总数据
             alldatalist:{
                 info:{},
-                 options: {}
+                 options: {},
+                     flights: []
+                      
             },
             newdatalist:{
                   info:{},
-                 options: {}
+                 options: {},                 
+                     flights: []
             }
 
             ,

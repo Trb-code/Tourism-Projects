@@ -7,7 +7,7 @@
     <el-form-item class="form-item" prop="captcha">
       <el-input placeholder="验证码" v-model="form.captcha">
         <template slot="append">
-          <el-button @click="handleSendCaptcha">发送验证码</el-button>
+          <el-button @click="handleSendCaptcha" :disabled="disable">{{count}}</el-button>
         </template>
       </el-input>
     </el-form-item>
@@ -98,16 +98,24 @@ export default {
             { validator: validatePass4, trigger: 'blur' }
           ],
             },
+            count:"发送验证码",
+            disable:false,
+            times:false
+
         }
     },
     methods: {
         // 发送验证码
         handleSendCaptcha(){
-          if(this.form.username.length!==11){
+var time=10
+
+ if(this.form.username.length!==11){
             this.$message("请输入合法手机号码")
             return false
           }
-          this.$axios({
+this.times=setInterval(() => {
+  if(time===0){
+    this.$axios({
             url:'/captchas',
             method:'post',
             data:{tel:this.form.username}
@@ -115,6 +123,39 @@ export default {
             console.log(res);
            this.form.captcha=res.data.code        
           })
+           
+    this.count='发送验证码',
+    this.disable=false
+    
+    clearInterval(this.times)
+    return;
+
+  }
+  else{
+        
+    this.count='重新获取'+ time,
+    this.disable=true
+    time--
+  }
+  
+}, 1000);
+
+
+
+
+
+          // if(this.form.username.length!==11){
+          //   this.$message("请输入合法手机号码")
+          //   return false
+          // }
+          // this.$axios({
+          //   url:'/captchas',
+          //   method:'post',
+          //   data:{tel:this.form.username}
+          // }).then(res=>{
+          //   console.log(res);
+          //  this.form.captcha=res.data.code        
+          // })
         },
        
         // 注册

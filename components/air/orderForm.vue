@@ -51,7 +51,7 @@
           <el-form-item label="手机">
             <el-input v-model="contactPhone" placeholder="请输入内容">
               <template slot="append">
-                <el-button @click="handleSendCaptcha">发送验证码</el-button>
+                <el-button @click="handleSendCaptcha" :disabled="disable">{{conunt}}</el-button>
               </template>
             </el-input>
           </el-form-item>
@@ -82,7 +82,10 @@ export default {
            captcha:'', //手机验证码
            invoice:false, //是否需要发票
            seat_xid:'', //座位id
-           air:''   //航班id
+           air:'',   //航班id
+            conunt:'发送验证码',
+            disable:false,
+            times:false                
         }        
     },
     methods: {
@@ -90,17 +93,20 @@ export default {
         handleAddUsers(){
             this.users.push({ username:'',
                id:''})                               
-        },
-        
+        },      
         // 移除乘机人
         handleDeleteUser(index){
             this.users.splice(index,1)           
-        },
-        
+        },       
         // 发送手机验证码
         handleSendCaptcha(){
-            // if(this.contactPhone.length<11) return false;
-            this.$axios({
+
+// 验证码倒计时
+var time=5
+this.times=setInterval(() => {
+    
+if(time==0){
+  this.$axios({
                 url:'/captchas',
                 method:'POST',
                 data:{
@@ -108,9 +114,30 @@ export default {
                 }                 
                 }).then(res=>{
                     console.log(res) 
-                this.captcha=res.data.code
+                // this.captcha=res.data.code
+                this.$message('000000')
             })          
+    this.conunt='发送验证码',
+    this.disable=false
+     clearInterval(this.times)
+       
+    return;
+}else if(this.contactPhone.length===11){
+    this.conunt='重新发送'+ time
+    this.disable=true
+    time--
+    return; 
+}
+  
+}, 1000)
+
+ 
+
+
+          
         },
+       
+        
 // 保险处理
 handchangge(id){
 let bxid=this.insurances.indexOf(id)
@@ -143,6 +170,13 @@ let data={
             data
         }).then(res=>{
             console.log(res);
+            this.$router.push({
+              // path:'/air/pay',
+              path:`/air/pay?id=${res.data.data.id}`,
+              // query:{
+              //   id:res.data.data.id             
+              // }
+            })
             
         })
           //  console.log(this.$store.state.user.userinfo.token);              
