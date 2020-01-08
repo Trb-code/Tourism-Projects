@@ -8,6 +8,7 @@
         <!-- 主体部分--------------- -->
       </el-col>
       <el-col :span="12">
+        <postmian />
         <!-- <div class="grid-content bg-purple">右边内容</div> -->
       </el-col>
     </el-row>
@@ -16,9 +17,11 @@
 
 <script>
 import postaside from '../../components/post/postaside'
+import postmian from '../../components/post/postmain'
 export default {
   components:{
-    postaside
+    postaside,
+    postmian
   }
 
 }

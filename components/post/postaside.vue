@@ -1,40 +1,48 @@
 <template>
-  <div class="postaside">
-    <div class="leftcity">
-      <ul>
-        <li
-          v-for="(item,index) in cictydata"
-          :key="index"
-          @mouseenter="handenter(index)"
-          :class="{active:active===index}"
-        >
-          {{item.type}}
-          <i class="el-icon-arrow-right"></i>
-        </li>
+  <!-- 旅游攻略 左边栏 -->
+  <div>
+    <div class="postaside">
+      <div class="leftcity">
+        <ul>
+          <li
+            v-for="(item,index) in cictydata"
+            :key="index"
+            @mouseenter="handenter(index)"
+            :class="{active:active===index}"
+          >
+            {{item.type}}
+            <i class="el-icon-arrow-right"></i>
+          </li>
 
-        <!-- 列表-->
-        <div class="datalist">
-          <ul v-if="actives" @mouseleave="handleave">
-            <li v-for="(item,index) in cictydata[indexData].children " :key="index">
-              <span style="hover{text-decoration: none}">{{index+1}}</span>&nbsp;
-              <span>{{item.city}}</span>
-              <span>{{item.desc}}</span>
-            </li>
-            <!-- <li>2广州</li>
+          <!-- 列表-->
+          <div class="datalist" v-if="actives" @mouseleave="handleave">
+            <ul>
+              <li v-for="(item,index) in cictydata[indexData].children " :key="index">
+                <span style="hover{text-decoration: none}">{{index+1}}</span>
+                &nbsp;
+                <nuxt-link :to="`/post?city=${item.city}`">
+                  <span>{{item.city}}</span>
+                  <span>{{item.desc}}</span>
+                </nuxt-link>
+              </li>
+
+              <!-- <li>2广州</li>
             <li>3广州</li>
             <li>4广州</li>
-            <li>5广州</li>-->
-          </ul>
-        </div>
-      </ul>
+              <li>5广州</li>-->
+            </ul>
+          </div>
+        </ul>
+      </div>
+      <span class="citcy">推荐城市</span>
+      <img src="http://157.122.54.189:9093/images/pic_sea.jpeg" alt />
     </div>
-    <span class="citcy">推荐城市</span>
-    <img src="http://157.122.54.189:9093/images/pic_sea.jpeg" alt />
   </div>
 </template>
 
 <script>
 export default {
+  
     data () {
         return {
             // 总数据
@@ -44,6 +52,7 @@ export default {
             indexData:0,
         }
     },methods: {
+       
         // 鼠标移入
         handenter(index){
             this.active=index
@@ -63,7 +72,7 @@ export default {
         this.$axios({
             url:'/posts/cities'
         }).then(res=>{
-            console.log(res);
+            // console.log(res);
       this.cictydata = res.data.data
       res.data.data             
         })
@@ -82,26 +91,29 @@ export default {
     // left: 527px;
     left: 260px;
     // margin-top: 22px;
+    background-color: #fff;
    
     >ul{  
           
          border: 1px solid #dddddd;
-         border-left: none
+         border-left: #ffff
     }
     li{
         padding-top: 13px;
-        span:nth-child(2){
+        span:nth-child(1){
           // display: block;
           color: #ffa500;
-          font-size: 16px;
+          font-size: 18px;
         padding-left: 6px;
         padding-right:  6px;
+        font-style: italic;
 cursor: pointer;
 &:hover{
   text-decoration: underline;
 }
         };
-        span:nth-child(1) {
+nuxt-link{
+          >span {
            color: #ffa500;
           font-size: 16px;           
  padding-left: 14px;
@@ -109,26 +121,24 @@ cursor: pointer;
        font-size: 22px;
        font-style: italic;
         }
-         span:nth-child(3){
+         
           &:hover{
              text-decoration: underline;
           }
-         }
+         
+}
     }
 }
 .active{
-    border-right: none !important;
+    border-right: #fff !important;
     color: #ffa500;
      
 }
 .leftcity{
     
           height: 200px;
-                // border-bottom: none; 
-                // border-bottom:  1px solid #dddddd !important;    
-          
->ul{   
-   
+                     
+>ul{     
          width: 260px;      
          border-bottom:  1px solid #dddddd !important;  
         margin-bottom: 20px;       

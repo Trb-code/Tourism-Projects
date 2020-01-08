@@ -99,9 +99,7 @@ flightsAside
                 (this.pageindex-1)*this.pagesize,
                 this.pageindex*this.pagesize
               )
-        },
-        
-       
+        },             
     },
     // 点击历史记录页面发生变化，通过watch监听$route的url
     watch: {
