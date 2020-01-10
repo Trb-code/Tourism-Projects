@@ -10,7 +10,7 @@ export default (nuxt) => {
 
         if(statusCode === 400){
             // Message相当于this.$message
-            Message.error(message)
+            Message.warning(message)
         }
          if(statusCode === 401){
             // Message相当于this.$message

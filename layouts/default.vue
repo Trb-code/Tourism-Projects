@@ -35,6 +35,8 @@ html {
 *{
   margin:0; 
   padding:0;
+  img{ 
+  max-width: 770px;}
 }
 ul, li, ol{
   list-style:none;

@@ -82,6 +82,9 @@ export default {
 </script>
 
 <style scoped lang='less'>
+.postaside{
+  width: 260px;
+}
 
 .datalist{ 
     width: 350px;
