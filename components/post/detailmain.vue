@@ -43,7 +43,7 @@
     <div class="comment">
       <p>评论</p>
       <!-- 评论提交框 -->
-      <el-input type="textarea" :rows="2" placeholder="说点什么吧" v-model="textarea"></el-input>
+      <el-input type="textarea" :rows="2" placeholder="说点什么吧" v-model="textarea" ref="inp"></el-input>
       <!-- 提交按钮 -->
       <el-button type="primary" @click="sendcomment">提交</el-button>
       <!-- 图片上传 -->
@@ -64,10 +64,9 @@
       <div class="commentlist" v-for="(item,index) in allcomment" :key="index">
         <div class="commenthead">
           <div class="left">
-            <img :src="item.account.defaultAvatar" alt style="width:14px;height:14px" />
+            <img :src="item.account.defaultAvatar" style="width:14px;height:14px" />
             <span>{{item.account.nickname}}</span>
-            <span>2019 04 26</span>
-
+            <span>{{item.created_at | datatime}}</span>
             <div class="imgs">
               <img
                 style="width:200px;heigth:200px"
@@ -79,34 +78,120 @@
           </div>
           <div>{{item.account.id}}</div>
         </div>
-
         <!-- 评论多层组件 -->
         <comment_item v-if="item.parent" :facomment="item.parent" />
-
+        <span class="huifu" @click="huifu(allcomment)">回复</span>
         <div class="commentcontent">{{item.content}}</div>
       </div>
     </div>
+    <!-- 分页--------------------------------------------- -->
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pageindex"
+      :page-sizes="[10, 20, 30, 40]"
+      :page-size="pagesize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+    ></el-pagination>
   </div>
 </template>
 <script>
+// 过滤器
+import {datatime} from "../../components/filter/filter.js"
 import moment from 'moment';
 import comment_item from "../../components/post/detailcomment_item"
 export default {
+  // 过滤器注册
+  filters:{
+    datatime
+  },
+     data () {
+        return {
+            // 文章数据
+            postlist:[],
+            textarea:'',
+            // 评论总数据
+            allcomment:[],
+            // 评论时间
+            // times:'',
+            isfalse:false,
+            
+            pics:[],                   
+        dialogImageUrl: '',
+        dialogVisible: false,
+        total:0,
+        pageindex:1,
+        pagesize:5     
+    }
+        },
   components:{
 comment_item
   },
-    methods: {
+// 监听分页变化--------------------------------------------
+watch: {
+  pageindex(){
+        this.$axios({
+          url:'/posts/comments',
+          params:{
+            post:this.$route.query.id,          
+            _limit:this.pagesize,
+            _start:this.pageindex*2
+          }
+        }).then(res=>{
+          console.log(res);
+       this.total=res.data.total
+    this.allcomment=res.data.data.map(v=>{
+      v.account.defaultAvatar="http://127.0.0.1:1337"+v.account.defaultAvatar     
+      return v
+    })          
+        })  
+      
+  },
+  pagesize(){
+         this.$axios({
+          url:'/posts/comments',
+          params:{
+            post:this.$route.query.id,          
+            _limit:this.pagesize,  
+            _start:this.pageindex
+            
+          }
+        }).then(res=>{
+          console.log(res);
+       this.total=res.data.total
+    this.allcomment=res.data.data.map(v=>{
+      v.account.defaultAvatar="http://127.0.0.1:1337"+v.account.defaultAvatar     
+      return v
+    })          
+        }) 
+  }
+},
+// -------------------------------------------------
+
+    methods: {  
+      // 点击回复，获取焦点  
+      huifu(allcomment){
+        this.$refs.inp.focus()},
+     leave(){
+        this.isfalse=false
+      },
+      enter(){
+  this.isfalse=true
+      },
+      // 分页------------------------>
+          handleSizeChange(val) {
+      this.pagesize=val
+      },
+      handleCurrentChange(val) {
+       this.pageindex=val
+      },
 
 // 评论图片上传成功
 uplodesuccess(response){
-  // console.log(response);
-  this.pics.push(...response)
-  // console.log(this.pics);
-  // console.log(this.allcomment);
-  
-  
+  console.log(response);
+  this.pics.push(...response)  
 },
-
 // 封装token
 settoken(){
   let token=this.$store.state.user.userinfo.token
@@ -121,20 +206,18 @@ settoken(){
           url:'/posts/comments',
           params:{
             post:this.$route.query.id,          
-            _limit:'',
-            _start:''
+            _limit:this.pagesize,
+            _start:this.pageindex
           }
         }).then(res=>{
           console.log(res);
+       this.total=res.data.total
     this.allcomment=res.data.data.map(v=>{
-      v.account.defaultAvatar="http://127.0.0.1:1337"+v.account.defaultAvatar
-      
+      v.account.defaultAvatar="http://127.0.0.1:1337"+v.account.defaultAvatar      
       return v
-    })
-          
+    })         
         })   
       },
-
 // 图片上传
  handleRemove(file, fileList) {
         console.log(file, fileList);
@@ -216,28 +299,9 @@ Authorization:'Bearer '+ this.$store.state.user.userinfo.token
 
 
     },
-    data () {
-        return {
-            // 文章数据
-            postlist:[],
-            textarea:'',
-            // 评论总数据
-            allcomment:[],
-            // 评论时间
-            // times:'',
-            time:new Date(),
-            pics:[],
-            
-                       
-        dialogImageUrl: '',
-        dialogVisible: false
-     
-
-        }
-    },
+  
     mounted(){
-      // 评论时间
-      // this.times=moment(time).format('LLL')
+     
     
         // 获取文章数据
         this.$axios({
@@ -255,6 +319,14 @@ Authorization:'Bearer '+ this.$store.state.user.userinfo.token
 }
 </script>
 <style scoped lang='less'>
+.huifu{
+   cursor: pointer;
+  position: relative;
+  top: 18px;
+  left: 708px;
+  font-size: 12px;
+  color: #007acc;
+}
 .imgs{
   margin-top: 25px;
   margin-right: 12px;
@@ -281,8 +353,7 @@ border-radius: 20%;
 }
  }
  }
-.main{
-  
+.main{ 
 .post{
     .title{
         font-size: 35px;
@@ -294,8 +365,7 @@ border-radius: 20%;
 .times{
         // padding-right: 0px !important;
           margin-left: 450px;
-          padding: 20px 0;
-      
+          padding: 20px 0;     
     }
 .crumbs{
     margin-top: 15px
@@ -306,8 +376,7 @@ border-radius: 20%;
         p{
             margin-left: -10px;
         }
-    }
-     
+    }  
      div{
          margin-left: 20px;
      }
@@ -337,28 +406,20 @@ border-radius: 20%;
          color: #ffa500;
           &:hover{
              cursor: pointer;
-         }
-       
-
+         }      
     }
     .el-icon-thumb{
          font-size: 34px;
           color: #ffa500;
            &:hover{
              cursor: pointer;
-         }
-        
-    }
-   
+         }       
+    }   
 }
 .comment{
     input{
         width: 100%;
-        height: 54px}
-       
+        height: 54px}         
 }
-
-
-
 
 </style>

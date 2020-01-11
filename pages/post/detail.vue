@@ -10,14 +10,12 @@
     </el-row>
   </div>
 </template>
-
 <script>
 import postmian from '../../components/post/detailmain'
 export default {
     components:{
         postmian
     }
-
 }
 </script>
 
