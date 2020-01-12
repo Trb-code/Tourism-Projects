@@ -122,7 +122,7 @@ export default {
         dialogVisible: false,
         total:0,
         pageindex:1,
-        pagesize:5     
+        pagesize:10     
     }
         },
   components:{
@@ -145,17 +145,15 @@ watch: {
       v.account.defaultAvatar="http://127.0.0.1:1337"+v.account.defaultAvatar     
       return v
     })          
-        })  
-      
+        })       
   },
   pagesize(){
          this.$axios({
           url:'/posts/comments',
           params:{
             post:this.$route.query.id,          
-            _limit:this.pagesize,  
-            _start:this.pageindex
-            
+           _limit:this.pagesize,
+            _start:this.pageindex           
           }
         }).then(res=>{
           console.log(res);
@@ -168,7 +166,6 @@ watch: {
   }
 },
 // -------------------------------------------------
-
     methods: {  
       // 点击回复，获取焦点  
       huifu(allcomment){
@@ -186,18 +183,10 @@ watch: {
       handleCurrentChange(val) {
        this.pageindex=val
       },
-
 // 评论图片上传成功
 uplodesuccess(response){
   console.log(response);
   this.pics.push(...response)  
-},
-// 封装token
-settoken(){
-  let token=this.$store.state.user.userinfo.token
-  return{  
-    Authorization:'Bearer '+ token 
-  }
 },
       // 封装评论列表
       commentlist(){
@@ -249,17 +238,17 @@ Authorization:'Bearer '+ this.$store.state.user.userinfo.token
     }     
     }).then(res=>{
       console.log(res);
-      if(res.data.status===0){
+      
         this.$message.success(res.data.message)
       this.textarea=''
-        // 刷新评论数据
-     this.commentlist() 
-      }   
+        // 刷新评论数据  
+       this.commentlist() 
+         
   })
   
 }
 },
-// ----------------------------------------------------
+// -------------------------------
 
     //   收藏文章
     collect(){   
@@ -301,8 +290,7 @@ Authorization:'Bearer '+ this.$store.state.user.userinfo.token
     },
   
     mounted(){
-     
-    
+ 
         // 获取文章数据
         this.$axios({
             url:'/posts',

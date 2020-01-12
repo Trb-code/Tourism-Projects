@@ -25,7 +25,7 @@
     <!-- 发布或者存草稿 -->
     <div class="send">
       <el-button type="primary" size="mini" @click="fabu">发布</el-button>&nbsp;&nbsp;或者
-      <span style="color:#ffa500;cursor: pointer;">存到草稿</span>
+      <span style="color:#ffa500;cursor: pointer;" @click="savedraft">存到草稿</span>
     </div>
   </div>
 </template>
@@ -37,12 +37,29 @@ if (process.browser) {
     VueEditor = require('vue-word-editor').default
 }
 export default {
+ props: ['sondata'],
+  
+ 
   components:{
     VueEditor
   },
+  
+  watch: {
+    // 监听草稿箱的数据，赋值给富文本框
+   sondata(){
+      this.textarea=this.sondata.textarea,
+      this.$refs.vueEditor.editor.root.innerHTML=this.sondata.content
+   
 
-
+    }
+  },
   methods: {
+    // 存到草稿
+    savedraft(){
+
+this.$store.commit('post/draftdata',{textarea:this.textarea,
+                                    content:this.$refs.vueEditor.editor.root.innerHTML})
+    },
 
 // 点击发布
 fabu(){

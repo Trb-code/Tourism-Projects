@@ -3,7 +3,7 @@
     <div class="commenthead">
       <div class="left">
         <span>{{facomment.account.nickname}}</span>
-        <span>20190924</span>
+        <span>{{facomment.updated_at|datatime}}</span>
       </div>
       <div>{{facomment.account.id}}</div>
     </div>
@@ -13,8 +13,11 @@
 </template>
 
 <script>
-
+import {datatime} from "../../components/filter/filter.js"
 export default {
+ filters:{
+    datatime
+  },
     data () {
         return {
             isflase:false

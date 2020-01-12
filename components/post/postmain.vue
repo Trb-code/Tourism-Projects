@@ -33,8 +33,17 @@
           <!-- 内容 -->
           <div class="content">{{item.summary}}</div>
           <!-- 图片-- -->
-          <div class="img">
+          <div class="img" v-if="item.images.length===1">
             <img style="width:220px;height:150px" :src="item.images" />
+          </div>
+          <div
+            style="width:770px;"
+            class="img"
+            v-else-if="item.images.length>1"
+            v-for="(imgs,index) in item.images"
+            :key="index"
+          >
+            <img style="width:220px;height:150px;display:block" :src="imgs" />
           </div>
         </div>
         <!-- 底部 --------------->
