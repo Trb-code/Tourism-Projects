@@ -43,7 +43,7 @@
     <div class="comment">
       <p>评论</p>
       <!-- 评论提交框 -->
-      <el-input type="textarea" :rows="2" placeholder="说点什么吧" v-model="textarea" ref="inp"></el-input>
+      <el-input type="textarea" :rows="2" :placeholder="placeholder" v-model="textarea" ref="inp"></el-input>
       <!-- 提交按钮 -->
       <el-button type="primary" @click="sendcomment">提交</el-button>
       <!-- 图片上传 -->
@@ -67,9 +67,10 @@
             <img :src="item.account.defaultAvatar" style="width:14px;height:14px" />
             <span>{{item.account.nickname}}</span>
             <span>{{item.created_at | datatime}}</span>
+
             <div class="imgs">
               <img
-                style="width:200px;heigth:200px"
+                style="width:200px;height:200px"
                 :src="`http://127.0.0.1:1337${it.url}`"
                 v-for="(it,index) in item.pics"
                 :key="index"
@@ -80,7 +81,7 @@
         </div>
         <!-- 评论多层组件 -->
         <comment_item v-if="item.parent" :facomment="item.parent" />
-        <span class="huifu" @click="huifu(allcomment)">回复</span>
+        <span class="huifu" @click="huifu(item)">回复</span>
         <div class="commentcontent">{{item.content}}</div>
       </div>
     </div>
@@ -108,6 +109,7 @@ export default {
   },
      data () {
         return {
+         follow:'',
             // 文章数据
             postlist:[],
             textarea:'',
@@ -116,10 +118,11 @@ export default {
             // 评论时间
             // times:'',
             isfalse:false,
-            
+            placeholder:'说点什么吧',
             pics:[],                   
         dialogImageUrl: '',
-        dialogVisible: false,
+           dialogVisible: false,
+      
         total:0,
         pageindex:1,
         pagesize:10     
@@ -131,45 +134,23 @@ comment_item
 // 监听分页变化--------------------------------------------
 watch: {
   pageindex(){
-        this.$axios({
-          url:'/posts/comments',
-          params:{
-            post:this.$route.query.id,          
-            _limit:this.pagesize,
-            _start:this.pageindex*2
-          }
-        }).then(res=>{
-          console.log(res);
-       this.total=res.data.total
-    this.allcomment=res.data.data.map(v=>{
-      v.account.defaultAvatar="http://127.0.0.1:1337"+v.account.defaultAvatar     
-      return v
-    })          
-        })       
+     this. commentlist()     
+         
   },
   pagesize(){
-         this.$axios({
-          url:'/posts/comments',
-          params:{
-            post:this.$route.query.id,          
-           _limit:this.pagesize,
-            _start:this.pageindex           
-          }
-        }).then(res=>{
-          console.log(res);
-       this.total=res.data.total
-    this.allcomment=res.data.data.map(v=>{
-      v.account.defaultAvatar="http://127.0.0.1:1337"+v.account.defaultAvatar     
-      return v
-    })          
-        }) 
-  }
+       this.commentlist() 
+  }  
 },
 // -------------------------------------------------
     methods: {  
+
       // 点击回复，获取焦点  
-      huifu(allcomment){
-        this.$refs.inp.focus()},
+      huifu(item){
+        this.$refs.inp.focus()
+        // console.log(item);
+        this.placeholder='@'+item.account.nickname 
+      this.follow=item.id             
+        },
      leave(){
         this.isfalse=false
       },
@@ -185,7 +166,7 @@ watch: {
       },
 // 评论图片上传成功
 uplodesuccess(response){
-  console.log(response);
+  // console.log(response);
   this.pics.push(...response)  
 },
       // 封装评论列表
@@ -196,7 +177,7 @@ uplodesuccess(response){
           params:{
             post:this.$route.query.id,          
             _limit:this.pagesize,
-            _start:this.pageindex
+            _start:(this.pageindex-1)*this.pagesize
           }
         }).then(res=>{
           console.log(res);
@@ -209,17 +190,17 @@ uplodesuccess(response){
       },
 // 图片上传
  handleRemove(file, fileList) {
-        console.log(file, fileList);
+        // console.log(file, fileList);
       },
       handlePictureCardPreview(file) {
-        console.log(file);
+        // console.log(file);
    
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
-        console.log(this.dialogImageUrl);        
+        // console.log(this.dialogImageUrl);        
       },
 // 点击提交评论--------------------------
-sendcomment(){
+sendcomment(){ 
 if(this.textarea===''){
   this.$message.warning("请输入内容")
   return false
@@ -235,21 +216,18 @@ Authorization:'Bearer '+ this.$store.state.user.userinfo.token
       content:this.textarea,
       pics:this.pics,
       post:this.$route.query.id,
+      follow:this.follow
     }     
     }).then(res=>{
-      console.log(res);
-      
+      console.log(res);    
         this.$message.success(res.data.message)
       this.textarea=''
         // 刷新评论数据  
-       this.commentlist() 
-         
+       this.commentlist()        
   })
-  
 }
 },
 // -------------------------------
-
     //   收藏文章
     collect(){   
             this.$axios({
@@ -267,7 +245,6 @@ Authorization:'Bearer '+ this.$store.state.user.userinfo.token
             }                     
         })          
     },
-
     // 点赞
     like(){
           this.$axios({
@@ -285,12 +262,8 @@ Authorization:'Bearer '+ this.$store.state.user.userinfo.token
             }                     
         })          
     }
-
-
     },
-  
     mounted(){
- 
         // 获取文章数据
         this.$axios({
             url:'/posts',

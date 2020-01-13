@@ -1,5 +1,6 @@
 <template>
   <div class="commentlist" @mouseenter="enter" @mouseleave="enters">
+    <mycomment v-if="facomment.parent" :facomment="facomment.parent" @replay="sendsomment" />
     <div class="commenthead">
       <div class="left">
         <span>{{facomment.account.nickname}}</span>
@@ -8,13 +9,16 @@
       <div>{{facomment.account.id}}</div>
     </div>
     <div class="commentcontent">{{facomment.content}}</div>
-    <span class="huifu" v-if="isflase">回复</span>
+    <span class="huifu" v-if="isflase" @click="sendsomment(facomment)">回复</span>
   </div>
 </template>
-
 <script>
 import {datatime} from "../../components/filter/filter.js"
 export default {
+  // 注册当前组件
+  name:'mycomment',
+  props: ['facomment'],
+  
  filters:{
     datatime
   },
@@ -23,13 +27,18 @@ export default {
             isflase:false
         }
     },
-props: ['facomment'],
+
 methods: {
     enter(){
         this.isflase=true
+      
+        
     },
     enters(){
        this.isflase=false
+    },
+    sendsomment(facomment){
+      this.$emit('replay',facomment)
     }
 }
 }

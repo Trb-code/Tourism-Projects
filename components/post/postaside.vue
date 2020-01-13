@@ -13,26 +13,21 @@
             {{item.type}}
             <i class="el-icon-arrow-right"></i>
           </li>
-
-          <!-- 列表-->
-          <div class="datalist" v-if="actives" @mouseleave="handleave">
-            <ul>
-              <li v-for="(item,index) in cictydata[indexData].children " :key="index">
-                <span style="hover{text-decoration: none}">{{index+1}}</span>
-                &nbsp;
-                <nuxt-link :to="`/post?city=${item.city}`">
-                  <span>{{item.city}}</span>
-                  <span>{{item.desc}}</span>
-                </nuxt-link>
-              </li>
-
-              <!-- <li>2广州</li>
-            <li>3广州</li>
-            <li>4广州</li>
-              <li>5广州</li>-->
-            </ul>
-          </div>
         </ul>
+
+        <!-- 列表-->
+        <div class="datalist" v-if="actives" @mouseleave="handleave">
+          <ul>
+            <li v-for="(item,index) in cictydata[indexData].children " :key="index">
+              <span style="hover{text-decoration: none}">{{index+1}}</span>
+              &nbsp;
+              <nuxt-link :to="`/post?city=${item.city}`">
+                <span>{{item.city}}</span>
+                <span>{{item.desc}}</span>
+              </nuxt-link>
+            </li>
+          </ul>
+        </div>
       </div>
       <span class="citcy">推荐城市</span>
       <img src="http://157.122.54.189:9093/images/pic_sea.jpeg" alt />
@@ -90,9 +85,9 @@ export default {
     width: 350px;
     
     position: relative;
-    top: -164px;
+    top: -186px;
     // left: 527px;
-    left: 260px;
+    left: 261px;
     // margin-top: 22px;
     background-color: #fff;
    
@@ -147,6 +142,9 @@ nuxt-link{
         margin-bottom: 20px;       
         margin-top: 22px;
         //  border: 0.5px solid #dddddd;
+           border-left: 1px solid #dddddd;
+           border-top: 1px solid #dddddd;
+           
       
          
  
@@ -159,8 +157,9 @@ nuxt-link{
           align-items: center;       
         height: 40px;
         line-height: 20px;
-        border: 1px solid #dddddd;             
-        border-bottom: none;
+        // border: 1px solid #dddddd;             
+        border-bottom: 1px solid #dddddd;
+        border-right: 1px solid #dddddd;
        
        
     }

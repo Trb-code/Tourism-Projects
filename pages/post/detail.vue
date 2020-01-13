@@ -5,16 +5,18 @@
         <postmian />
       </el-col>
       <el-col :span="5">
-        <div class="grid-content bg-purple"></div>
+        <detailaside />
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
 import postmian from '../../components/post/detailmain'
+import detailaside from '../../components/post/detailaside'
 export default {
     components:{
-        postmian
+        postmian,
+        detailaside
     }
 }
 </script>
